@@ -171,6 +171,9 @@ tr.best td{background:#eff7f1}
 .tpl pre{background:var(--paper2);border:1px dashed var(--line);border-radius:12px;padding:16px 14px;font:12px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;white-space:pre-wrap;color:#3a4a42;margin:0}
 .tpl button{position:absolute;top:8px;right:8px;background:var(--tea);color:#fff;border:none;border-radius:99px;padding:7px 14px;font:700 12px 'Inter',sans-serif;cursor:pointer;box-shadow:var(--sh)}
 .tpl button:hover{background:var(--tea-d)}
+.rent-links{margin-top:14px}
+.rent-links>b{font-size:13px;color:var(--ink)}
+.rent-links .offer.alt{margin:8px 6px 0 0}
 
 /* ---------- CHECKLIST ---------- */
 .check-col{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--sh);padding:22px;position:relative}
@@ -261,6 +264,7 @@ footer .zh{font-size:15px;color:var(--ink)}
       <div class="stat"><b>4</b><span>ride days</span></div>
       <div class="stat"><b>3</b><span>tea regions</span></div>
       <div class="stat rose"><b>BTS</b><span>Sat Nov 21</span></div>
+      <div class="stat" id="fx"><b>NT$31.8</b><span>per US$1 · Oct 6 · ₽100 ≈ NT$37.3</span></div>
     </div>
   </div>
   <svg class="hero-mountains" viewBox="0 0 1440 240" preserveAspectRatio="none" aria-hidden="true">
@@ -629,6 +633,13 @@ footer .zh{font-size:15px;color:var(--ink)}
     <div class="climb-opt"><b>A — FLCA 樂活單車 · two-day group tour</b><br><span>Taichung HSR pickup 10:30 (08:00 bus from the lake). Day 1: 31 km to Cingjing + hotel; Day 2: 24 km to Wuling, Songxue Lodge lunch, back by 20:00. Guide + nanny van + mechanic + insurance; rental NT$500/day flat-bar (lights &amp; helmet incl.); min 4 pax or <b>custom charter: 02-2570-7865 #271/272</b> · flca.tw. Wife: rides Day 1, van on Day 2.</span></div>
     <div class="climb-opt"><b>B — Puli rental + shuttle · day trip (itinerary unchanged)</b><br><span>Rent road bike + e-bike in Puli (順騎自然 etc.), book a 武嶺接駁 shuttle. You ride the full 55 km; wife shuttles to 翠峰 and e-bikes the last 14 km. ~NT$4,000–6,000 for two. Thin English — translation app. <b>The only option that depends on nobody's calendar.</b></span></div>
     <div class="climb-opt"><b>C — Giant Adventure 一日武嶺 · e-bike group day</b><br><span>Giant's own tour: pro leader + follow van, e-bikes to 3,275 m, shuttle down. November dates published only via their LINE/FB — one message away.</span></div>
+    <div class="rent-links">
+      <b>🔗 Rental &amp; tour links · 租車與報名</b><br>
+      <a class="offer alt" target="_blank" rel="noopener" href="https://www.flca.tw/bike_tours02.php?id=4&amp;echelon=152">FLCA 武嶺二日遊</a>
+      <a class="offer alt" target="_blank" rel="noopener" href="https://www.giant-adventure.com/TW/rental">Giant Adventure 捷安特旅遊</a>
+      <a class="offer alt" target="_blank" rel="noopener" href="https://www.facebook.com/545bike/">順騎自然 Puli · FB</a>
+      <a class="offer alt" target="_blank" rel="noopener" href="https://mathewbike.com/en/">MathewBike · EN backup</a>
+    </div>
     <div class="climb-note">🎒 Bring your own pedals/shoes if you're picky (rentals are flat-bar) · gloves + layers, 0–5 °C at the summit · cash in NT$ for shops and shuttles · decide by Oct 15.</div>
     <div class="tpl">
       <button id="copytpl" type="button">Copy message</button>
@@ -708,7 +719,7 @@ Questions: 1) Any mid-November departures? 2) What's included? 3) Can we start/e
       <td class="price">₽79k</td>
     </tr>
   </table>
-  <div class="combo rv">✈️ Best pair: China Eastern out + China Southern back = <b>₽119,177 total for two</b>, baggage on all legs. Links open live tbank share pages — prices re-verified Oct 6.</div>
+  <div class="combo rv">✈️ Best pair: China Eastern out + China Southern back = <b>₽119,177 ≈ US$1,400</b> total for two, baggage on all legs. Links open live tbank share pages — prices re-verified Oct 6.</div>
   <p class="fine">On the ground: ~US$3,000–3,500 for two, excluding flights &amp; concert — hotels ≈ 1,600 · Wuling day ≈ 250 · trains &amp; buses ≈ 300 · food ≈ 700 · rest buffer.</p>
 </section>
 
@@ -814,6 +825,16 @@ Questions: 1) Any mid-November departures? 2) What's included? 3) Can we start/e
     if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(done,done);}
     else{var ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);done();}
   });}
+
+  /* ---------- fx rate live refresh ---------- */
+  try{
+    fetch('https://open.er-api.com/v6/latest/USD').then(function(r){return r.json();}).then(function(d){
+      var t=d.rates&&d.rates.TWD, rub=d.rates&&d.rates.RUB, el=document.getElementById('fx');
+      if(!t||!rub||!el) return;
+      el.querySelector('b').textContent='NT$'+(Math.round(t*10)/10);
+      el.querySelector('span').textContent='per US$1 · live · ₽100 ≈ NT$'+(Math.round(t/rub*1000)/10);
+    }).catch(function(){});
+  }catch(e){}
 
   /* ---------- reveal on scroll ---------- */
   if('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches){
