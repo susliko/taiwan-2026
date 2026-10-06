@@ -162,6 +162,16 @@ tr.best td{background:#eff7f1}
 .combo{background:var(--gold-l);border:1px solid #e6d5ac;border-radius:14px;padding:12px 16px;font-size:13.5px;margin-top:14px;color:#5c4a16}
 .combo b{font-family:'Fraunces',serif;font-size:17px;color:#7a5c12}
 
+/* climb booking panel */
+.climb-opt{padding:12px 0;border-bottom:1px solid var(--paper2);font-size:13.5px}
+.climb-opt b{color:var(--tea-d)}
+.climb-opt span{color:var(--ink2)}
+.climb-note{margin-top:14px;background:var(--paper2);border:1px dashed var(--line);border-radius:10px;padding:10px 12px;font-size:12.5px;color:var(--ink2)}
+.tpl{position:relative;margin-top:16px}
+.tpl pre{background:var(--paper2);border:1px dashed var(--line);border-radius:12px;padding:16px 14px;font:12px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;white-space:pre-wrap;color:#3a4a42;margin:0}
+.tpl button{position:absolute;top:8px;right:8px;background:var(--tea);color:#fff;border:none;border-radius:99px;padding:7px 14px;font:700 12px 'Inter',sans-serif;cursor:pointer;box-shadow:var(--sh)}
+.tpl button:hover{background:var(--tea-d)}
+
 /* ---------- CHECKLIST ---------- */
 .check-col{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--sh);padding:22px;position:relative}
 .progress{height:8px;border-radius:99px;background:var(--paper2);overflow:hidden;margin:14px 0 6px}
@@ -366,8 +376,12 @@ footer .zh{font-size:15px;color:var(--ink)}
       </div>
       <div class="dph">
         <figure class="ph">
-          <img loading="lazy" alt="Taipei 101 at night" src="https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bf/Taipei_101_20130212_night.jpg/960px-Taipei_101_20130212_night.jpg">
-          <figcaption>Taipei nights<span class="zh">台北101 · 夜市前後</span></figcaption>
+          <img loading="lazy" alt="Longshan Temple roof lit at night" src="https://thumb.wikimedia.org/wikipedia/commons/thumb/0/09/Longshan_Temple_Taipei_20260825.jpg/1280px-Longshan_Temple_Taipei_20260825.jpg">
+          <figcaption>Longshan after dark<span class="zh">龍山寺 · 艋舺之夜</span></figcaption>
+        </figure>
+        <figure class="ph">
+          <img loading="lazy" alt="Ningxia night market neon and stalls" src="https://thumb.wikimedia.org/wikipedia/commons/thumb/9/93/Ningxia_Night_Market_20250520.jpg/1280px-Ningxia_Night_Market_20250520.jpg">
+          <figcaption>Ningxia night market<span class="zh">寧夏夜市 · 晚餐在這</span></figcaption>
         </figure>
       </div>
     </div>
@@ -608,6 +622,22 @@ footer .zh{font-size:15px;color:var(--ink)}
       <span><i style="background:#ffffff;opacity:.5"></i>Support van follows all day</span>
     </div>
   </div>
+
+  <div class="panel rv" style="margin-top:18px">
+    <h3>📨 How to book the climb · 預約武嶺</h3>
+    <div class="zh">三條路 · 本週各發一封 · 10月15日前決定</div>
+    <div class="climb-opt"><b>A — FLCA 樂活單車 · two-day group tour</b><br><span>Taichung HSR pickup 10:30 (08:00 bus from the lake). Day 1: 31 km to Cingjing + hotel; Day 2: 24 km to Wuling, Songxue Lodge lunch, back by 20:00. Guide + nanny van + mechanic + insurance; rental NT$500/day flat-bar (lights &amp; helmet incl.); min 4 pax or <b>custom charter: 02-2570-7865 #271/272</b> · flca.tw. Wife: rides Day 1, van on Day 2.</span></div>
+    <div class="climb-opt"><b>B — Puli rental + shuttle · day trip (itinerary unchanged)</b><br><span>Rent road bike + e-bike in Puli (順騎自然 etc.), book a 武嶺接駁 shuttle. You ride the full 55 km; wife shuttles to 翠峰 and e-bikes the last 14 km. ~NT$4,000–6,000 for two. Thin English — translation app. <b>The only option that depends on nobody's calendar.</b></span></div>
+    <div class="climb-opt"><b>C — Giant Adventure 一日武嶺 · e-bike group day</b><br><span>Giant's own tour: pro leader + follow van, e-bikes to 3,275 m, shuttle down. November dates published only via their LINE/FB — one message away.</span></div>
+    <div class="climb-note">🎒 Bring your own pedals/shoes if you're picky (rentals are flat-bar) · gloves + layers, 0–5 °C at the summit · cash in NT$ for shops and shuttles · decide by Oct 15.</div>
+    <div class="tpl">
+      <button id="copytpl" type="button">Copy message</button>
+      <pre id="tpltext">您好！我們想預約 11 月 17 日（二）武嶺單車行程，2 位 — 一位騎公路車，一位租電輔車。
+Hello! We'd like to book a Wuling cycling trip on Tue, Nov 17 — 2 people: one road bike, one e-bike rental.
+請問：1) 11 月中有沒有出團日期？ 2) 費用包含什麼？ 3) 可以從埔里出發/結束嗎？ 4) 有電輔車嗎？我們住日月潭。
+Questions: 1) Any mid-November departures? 2) What's included? 3) Can we start/end in Puli? 4) E-bike available? We stay at Sun Moon Lake.</pre>
+    </div>
+  </div>
 </section>
 
 <!-- LEDGERS -->
@@ -692,7 +722,7 @@ footer .zh{font-size:15px;color:var(--ink)}
     <label class="chk prio"><input type="checkbox" data-k="flights"><span class="box"></span><span class="txt"><b>✈️ Flights — open the offer links above</b><span>China Eastern out ₽64,627 + China Southern back ₽54,550 = ₽119,177 round trip</span></span></label>
     <label class="chk"><input type="checkbox" data-k="concert" checked><span class="box"></span><span class="txt"><b>🎫 Concert confirmed — Sat Nov 21 ✓</b><span>Shows ran 19 / 21 / 22; yours is Saturday. Done!</span></span></label>
     <label class="chk prio"><input type="checkbox" data-k="khh"><span class="box"></span><span class="txt"><b>🏨 Kaohsiung ×3 nights</b><span>Near Red Line MRT; concert-weekend prices spike</span></span></label>
-    <label class="chk"><input type="checkbox" data-k="wuling"><span class="box"></span><span class="txt"><b>🚴 Wuling group day — Nov 17</b><span>Giant Adventure 一日武嶺 or Puli shop (順騎自然 / 樂活單車); confirm a Tue departure exists, else shift lake/farm days ±1</span></span></label>
+    <label class="chk"><input type="checkbox" data-k="wuling"><span class="box"></span><span class="txt"><b>🚴 Wuling group day — Nov 17</b><span>Send the template in the Wuling section to FLCA / Giant Adventure / Puli shops — decide by Oct 15. Option B (Puli rental + shuttle) is the no-dependency fallback</span></span></label>
     <label class="chk"><input type="checkbox" data-k="lugu"><span class="box"></span><span class="txt"><b>🍵 Lugu tea-farm stay — Nov 16</b><span>Book direct with the farm; ask for pickup &amp; roasting evening</span></span></label>
     <label class="chk"><input type="checkbox" data-k="alishan"><span class="box"></span><span class="txt"><b>🚌 Bus 6739 seats + Alishan hotel — Nov 18</b><span>08:00 Shuishe departure; sunrise shuttle/train booked on arrival</span></span></label>
     <label class="chk"><input type="checkbox" data-k="onsen"><span class="box"></span><span class="txt"><b>♨️ Wulai tub-room + Beitou tub-room</b><span>Nights of Nov 13 &amp; 22 — private in-room tubs only</span></span></label>
@@ -775,6 +805,15 @@ footer .zh{font-size:15px;color:var(--ink)}
   }catch(e){}
   items.forEach(function(i){ i.addEventListener('change',refresh); });
   refresh();
+
+  /* ---------- climb template copy ---------- */
+  var cb=document.getElementById('copytpl');
+  if(cb){cb.addEventListener('click',function(){
+    var t=document.getElementById('tpltext').innerText;
+    var done=function(){cb.textContent='Copied ✓';setTimeout(function(){cb.textContent='Copy message';},2000);};
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(done,done);}
+    else{var ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);done();}
+  });}
 
   /* ---------- reveal on scroll ---------- */
   if('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches){
