@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Taiwan · Nov 13–23, 2026 — Tea, Summits &amp; BTS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Inter:wght@300..800&family=Noto+Serif+TC:wght@400;600;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+:root{
+  --paper:#faf7f1; --paper2:#f3eee4; --card:#ffffff;
+  --ink:#1e2a24; --ink2:#51605a; --line:#e4ddce;
+  --tea:#2d6a4f; --tea-d:#1f4d39; --tea-l:#e7f0ea;
+  --gold:#b7791f; --gold-l:#f6ecd9;
+  --rose:#b23a48; --rose-l:#f9e9ea;
+  --sky:#3d5a80; --sky-l:#e8eef5;
+  --sh:0 1px 2px rgba(30,42,36,.05), 0 8px 28px rgba(30,42,36,.08);
+  --sh2:0 2px 4px rgba(30,42,36,.06), 0 16px 44px rgba(30,42,36,.12);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--paper);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased}
+.zh{font-family:'Noto Serif TC','Fraunces',serif}
+h1,h2,h3,.disp{font-family:'Fraunces','Georgia',serif}
+a{color:var(--tea)}
+
+/* ---------- NAV ---------- */
+nav{position:sticky;top:0;z-index:50;background:rgba(250,247,241,.86);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav-in{max-width:1080px;margin:0 auto;display:flex;align-items:center;gap:18px;padding:12px 24px}
+.nav-logo{font-weight:800;letter-spacing:.02em;font-size:15px;display:flex;gap:10px;align-items:center}
+.nav-logo .dot{width:9px;height:9px;border-radius:50%;background:linear-gradient(135deg,var(--tea),var(--gold))}
+nav ul{display:flex;gap:2px;list-style:none;margin-left:auto;font-size:13.5px;flex-wrap:wrap}
+nav a{color:var(--ink2);text-decoration:none;padding:6px 11px;border-radius:99px}
+nav a:hover{background:var(--tea-l);color:var(--tea-d)}
+
+/* ---------- HERO ---------- */
+header{position:relative;overflow:hidden;border-bottom:1px solid var(--line);
+  background:linear-gradient(180deg,#f6f1e6 0%, #faf7f1 100%)}
+.hero-mountains{display:block;width:100%;height:auto;margin-top:-8px}
+.hero-in{max-width:1080px;margin:0 auto;padding:72px 24px 0;position:relative}
+.kicker{font-size:12.5px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:10px}
+.kicker::before{content:"";width:34px;height:2px;background:var(--gold)}
+h1{font-size:clamp(40px,6.4vw,74px);font-weight:600;line-height:1.03;letter-spacing:-.015em;margin:18px 0 6px}
+h1 em{font-style:italic;color:var(--tea)}
+.hero-sub{font-size:clamp(16px,2vw,19px);color:var(--ink2);max-width:640px;margin-bottom:8px}
+.hero-bigzh{position:absolute;right:24px;top:60px;font-size:clamp(90px,13vw,170px);line-height:1;color:var(--ink);opacity:.055;font-weight:900;user-select:none;pointer-events:none}
+.stats{display:flex;flex-wrap:wrap;gap:10px;margin:26px 0 34px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 16px;box-shadow:var(--sh)}
+.stat b{display:block;font-family:'Fraunces',serif;font-size:22px;color:var(--tea-d)}
+.stat span{font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink2)}
+.stat.rose b{color:var(--rose)}
+
+/* ---------- ROUTE STRIP ---------- */
+.route{max-width:1080px;margin:0 auto;padding:34px 24px 10px}
+.route-chips{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.chip{background:var(--card);border:1px solid var(--line);border-radius:99px;padding:7px 15px;font-size:13.5px;font-weight:600;box-shadow:var(--sh);white-space:nowrap}
+.chip .zh{color:var(--ink2);font-weight:400;font-size:12px;margin-left:6px}
+.chip.hot{background:var(--rose);border-color:var(--rose);color:#fff}
+.chip.hot .zh{color:#f4c7cc}
+.arrow{color:var(--gold);font-weight:800}
+
+/* ---------- SECTIONS ---------- */
+section{max-width:1080px;margin:0 auto;padding:56px 24px 8px}
+.sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:26px;flex-wrap:wrap}
+.sec-head h2{font-size:clamp(26px,3.4vw,36px);font-weight:600;letter-spacing:-.01em}
+.sec-head .zh2{font-size:20px;color:var(--gold);font-weight:600}
+.sec-head .rule{flex:1;height:1px;background:var(--line);min-width:40px}
+
+/* ---------- MAP ---------- */
+#mapid{height:480px;border-radius:18px;border:1px solid var(--line);box-shadow:var(--sh2);z-index:0;position:relative}
+.pin{width:27px;height:27px;border-radius:50%;background:#fff;border:3px solid var(--tea);color:var(--tea-d);font:800 12px/21px 'Inter',sans-serif;text-align:center;box-shadow:0 2px 10px rgba(20,30,25,.4)}
+.pin.gold{border-color:var(--gold);background:var(--gold);color:#fff}
+.pin.red{border-color:var(--rose);background:var(--rose);color:#fff;font-size:13px}
+.pin.small{width:11px;height:11px;border:none;background:rgba(96,108,102,.85);box-shadow:0 1px 5px rgba(0,0,0,.45)}
+.leaflet-popup-content b{font-size:14px}
+.leaflet-popup-content{font-size:12.5px;line-height:1.45}
+.map-legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--ink2);margin-top:12px;align-items:center}
+.map-legend i{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:6px;vertical-align:-1px;border:2.5px solid var(--tea);background:#fff}
+.map-legend i.gold{border-color:var(--gold);background:var(--gold)}
+.map-legend i.red{border-color:var(--rose);background:var(--rose)}
+.map-legend i.dot{border:none;background:rgba(96,108,102,.85);width:8px;height:8px}
+.map-legend i.line{width:22px;height:0;border-radius:0;border:none;border-top:3px dashed var(--gold)}
+.map-fallback{display:none;padding:18px;font-size:13.5px;color:var(--ink2)}
+
+/* ---------- TIMELINE ---------- */
+.tl{position:relative;padding-left:34px}
+.tl::before{content:"";position:absolute;left:9px;top:6px;bottom:30px;width:2px;background:linear-gradient(180deg,var(--tea),var(--gold) 60%,var(--rose))}
+.day{position:relative;background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--sh);padding:20px 22px 18px;margin-bottom:18px}
+.day::before{content:"";position:absolute;left:-32px;top:24px;width:14px;height:14px;border-radius:50%;background:var(--card);border:3px solid var(--tea);box-shadow:0 0 0 4px var(--paper)}
+.day.onsen::before{border-color:var(--sky)}
+.day.ride::before{border-color:var(--gold)}
+.day.concert::before{border-color:var(--rose);background:var(--rose)}
+.day-head{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin-bottom:10px}
+.date-chip{font-family:'Fraunces',serif;font-weight:700;font-size:14px;background:var(--paper2);border:1px solid var(--line);border-radius:10px;padding:5px 12px;white-space:nowrap}
+.day-head h3{font-size:21px;font-weight:650}
+.day-head .zh{color:var(--ink2);font-size:15px;font-weight:400}
+.badge{margin-left:auto;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;border-radius:99px;padding:5px 12px;white-space:nowrap}
+.badge.onsen{background:var(--sky-l);color:var(--sky)}
+.badge.ride{background:var(--gold-l);color:var(--gold)}
+.badge.tea{background:var(--tea-l);color:var(--tea)}
+.badge.concert{background:var(--rose);color:#fff}
+.badge.travel{background:var(--paper2);color:var(--ink2)}
+.day ul{list-style:none;font-size:14.5px;color:#33413b}
+.day li{padding:4px 0 4px 22px;position:relative}
+.day li::before{content:"";position:absolute;left:4px;top:12px;width:6px;height:6px;border-radius:50%;background:var(--gold)}
+.move{margin-top:12px;font-size:12.5px;color:var(--ink2);background:var(--paper);border:1px dashed var(--line);border-radius:10px;padding:8px 12px}
+.move b{color:var(--tea-d)}
+.day.concert{background:linear-gradient(135deg,#fff, #fdf3f4);border-color:#e9c6ca}
+
+/* photos inside day cards */
+.day.has-ph{display:grid;grid-template-columns:1fr 225px;gap:18px;align-items:start}
+.dc{grid-column:1;grid-row:1;min-width:0}
+.dph{grid-column:2;grid-row:1;display:flex;flex-direction:column;gap:10px}
+.dph.full{grid-column:1/-1;grid-row:2;flex-direction:row}
+.ph{position:relative;border-radius:14px;overflow:hidden;border:1px solid var(--line);margin:0;aspect-ratio:4/3;background:var(--paper2);box-shadow:var(--sh)}
+.dph.full .ph{aspect-ratio:21/8;flex:1}
+.ph img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s ease}
+.ph:hover img{transform:scale(1.06)}
+.ph figcaption{position:absolute;left:0;right:0;bottom:0;padding:26px 12px 8px;color:#fff;font-size:11.5px;font-weight:600;
+  background:linear-gradient(180deg,transparent,rgba(15,25,20,.8));text-shadow:0 1px 5px rgba(0,0,0,.5)}
+.ph figcaption .zh{display:block;font-size:10.5px;color:#f3e9d2;font-weight:400}
+
+/* ---------- WULING PROFILE ---------- */
+.wuling-card{background:linear-gradient(160deg,#14342a,#1f4d39);border-radius:22px;box-shadow:var(--sh2);color:#eef4ef;padding:26px 26px 18px;position:relative;overflow:hidden}
+.wuling-card h3{font-size:24px;color:#fff}
+.wuling-card .sub{color:#bcd2c5;font-size:13.5px;margin-bottom:14px}
+.prof-svg{width:100%;height:auto;display:block}
+.wl{fill:#e9c46a;fill-opacity:.9;font:600 11px Inter,sans-serif}
+.wl-sm{fill:#9fc4ad;font:500 10px Inter,sans-serif}
+.wlegend{display:flex;gap:18px;flex-wrap:wrap;font-size:12px;color:#cfe2d6;margin-top:10px}
+.wlegend i{display:inline-block;width:16px;height:3px;border-radius:2px;margin-right:6px;vertical-align:middle}
+
+/* ---------- LEDGERS ---------- */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:820px){.grid2{grid-template-columns:1fr}}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--sh);padding:22px}
+.panel h3{font-size:19px;margin-bottom:4px}
+.panel .zh{color:var(--ink2);font-size:14px}
+.ledger-item{display:flex;gap:14px;padding:12px 0;border-bottom:1px solid var(--paper2)}
+.ledger-item:last-child{border-bottom:0}
+.ledger-item .ico{width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.ico.ride{background:var(--gold-l)} .ico.tea{background:var(--tea-l)} .ico.hot{background:var(--rose-l)} .ico.sky{background:var(--sky-l)}
+.ledger-item b{display:block;font-size:14.5px}
+.ledger-item span{font-size:13px;color:var(--ink2)}
+
+/* ---------- TABLES / OFFERS ---------- */
+table{width:100%;border-collapse:collapse;font-size:14px;background:var(--card);border-radius:16px;overflow:hidden;box-shadow:var(--sh)}
+th{font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink2);text-align:left;padding:12px 14px;background:var(--paper2)}
+td{padding:13px 14px;border-top:1px solid var(--paper2);vertical-align:top}
+tr.warn td{background:#fdf6ec}
+tr.best td{background:#eff7f1}
+.tag{display:inline-block;font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;border-radius:6px;padding:2px 8px;margin-left:8px;vertical-align:1px}
+.tag.best{background:var(--tea);color:#fff}.tag.warn{background:#ecb44b;color:#4a3406}
+.price{font-family:'Fraunces',serif;font-weight:700;color:var(--tea-d);white-space:nowrap}
+.fine{font-size:12.5px;color:var(--ink2);margin-top:10px}
+.offer{display:inline-flex;align-items:center;gap:7px;background:var(--tea);color:#fff;border-radius:99px;padding:7px 15px;font-size:12.5px;font-weight:700;text-decoration:none;box-shadow:var(--sh);margin:4px 6px 4px 0;transition:background .15s}
+.offer:hover{background:var(--tea-d);color:#fff}
+.offer.alt{background:#fff;color:var(--tea);border:1.5px solid var(--tea)}
+.offer.alt:hover{background:var(--tea-l);color:var(--tea-d)}
+.combo{background:var(--gold-l);border:1px solid #e6d5ac;border-radius:14px;padding:12px 16px;font-size:13.5px;margin-top:14px;color:#5c4a16}
+.combo b{font-family:'Fraunces',serif;font-size:17px;color:#7a5c12}
+
+/* ---------- CHECKLIST ---------- */
+.check-col{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--sh);padding:22px;position:relative}
+.progress{height:8px;border-radius:99px;background:var(--paper2);overflow:hidden;margin:14px 0 6px}
+.progress i{display:block;height:100%;width:0%;background:linear-gradient(90deg,var(--tea),var(--gold));transition:width .4s ease;border-radius:99px}
+.chk{display:flex;gap:12px;align-items:flex-start;padding:11px 4px;border-bottom:1px solid var(--paper2);cursor:pointer;user-select:none}
+.chk:last-of-type{border-bottom:0}
+.chk input{display:none}
+.chk .box{width:20px;height:20px;border:2px solid var(--line);border-radius:6px;flex-shrink:0;margin-top:2px;position:relative;transition:all .15s;background:#fff}
+.chk input:checked + .box{background:var(--tea);border-color:var(--tea)}
+.chk input:checked + .box::after{content:"✓";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:800}
+.chk .txt b{font-size:14.5px;display:block}
+.chk .txt span{font-size:12.5px;color:var(--ink2)}
+.chk input:checked ~ .txt b{color:var(--ink2);text-decoration:line-through;text-decoration-color:rgba(45,106,79,.5)}
+.chk.prio .txt b::after{content:"NOW";font-family:'Inter',sans-serif;font-size:9.5px;font-weight:800;color:#fff;background:var(--rose);border-radius:5px;padding:2px 6px;margin-left:8px;letter-spacing:.08em;vertical-align:2px}
+.saved{font-size:11.5px;color:var(--ink2);text-align:right;margin-top:8px}
+
+/* ---------- NOTES ---------- */
+.notes{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.note{background:var(--paper2);border:1px solid var(--line);border-radius:16px;padding:18px 18px 16px}
+.note b{font-size:14px;display:block;margin-bottom:6px}
+.note p{font-size:13.5px;color:var(--ink2)}
+.note .emo{font-size:20px;display:block;margin-bottom:8px}
+
+/* ---------- ACT-NOW BANNER ---------- */
+.actnow{background:linear-gradient(135deg,var(--rose),#8f2d39);border-radius:22px;color:#fff;box-shadow:var(--sh2);padding:26px 28px}
+.actnow h2{color:#fff;font-size:26px;margin-bottom:6px}
+.actnow p{color:#f4d7db;font-size:14.5px;margin-bottom:14px}
+.actnow ol{list-style:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.actnow li{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);border-radius:14px;padding:14px 16px;font-size:13.5px;backdrop-filter:blur(4px)}
+.actnow li b{display:block;font-size:15px;margin-bottom:3px}
+.actnow li span{color:#f7e3e6}
+
+/* ---------- REVEAL ---------- */
+.rv{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease}
+.rv.on{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}}
+
+footer{max-width:1080px;margin:70px auto 0;padding:28px 24px 44px;border-top:1px solid var(--line);color:var(--ink2);font-size:12.5px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
+footer .zh{font-size:15px;color:var(--ink)}
+
+@media print{
+  nav,.actnow,#mapid{display:none}
+  body{background:#fff}
+  .day,.panel,table,.check-col,.ph{box-shadow:none}
+  section{padding-top:20px}
+  .rv{opacity:1;transform:none}
+}
+@media(max-width:640px){
+  .hero-bigzh{display:none}
+  nav ul{display:none}
+  #mapid{height:380px}
+  .day.has-ph{grid-template-columns:1fr}
+  .dc{grid-row:1}
+  .dph{grid-column:1;grid-row:2;flex-direction:row;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:4px}
+  .dph .ph{flex:0 0 78%;scroll-snap-align:center}
+  .dph.full{flex-direction:row}
+  .dph.full .ph{aspect-ratio:16/9}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-in">
+    <div class="nav-logo"><span class="dot"></span>Taiwan · 茶與山</div>
+    <ul>
+      <li><a href="#route">Route</a></li>
+      <li><a href="#mapsec">Map</a></li>
+      <li><a href="#days">Itinerary</a></li>
+      <li><a href="#wuling">Wuling</a></li>
+      <li><a href="#flights">Flights</a></li>
+      <li><a href="#checklist">Checklist</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header>
+  <div class="hero-in">
+    <div class="hero-bigzh zh">茶山行</div>
+    <div class="kicker">Nov 13 – 23, 2026 · Moscow ⇄ Taipei · two travelers</div>
+    <h1>Ten days of <em>tea,</em><br>summits &amp; <em>southern lights.</em></h1>
+    <p class="hero-sub">A slow route through hot-spring villages, GABA farms and a 3,275 m pass — ending in a stadium in Kaohsiung.</p>
+    <div class="stats">
+      <div class="stat"><b>10</b><span>nights</span></div>
+      <div class="stat"><b>6</b><span>bases</span></div>
+      <div class="stat"><b>3,275 m</b><span>Wuling pass</span></div>
+      <div class="stat"><b>4</b><span>ride days</span></div>
+      <div class="stat"><b>3</b><span>tea regions</span></div>
+      <div class="stat rose"><b>BTS</b><span>Sat Nov 21</span></div>
+    </div>
+  </div>
+  <svg class="hero-mountains" viewBox="0 0 1440 240" preserveAspectRatio="none" aria-hidden="true">
+    <defs>
+      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#f2ead8"/><stop offset="1" stop-color="#faf7f1"/>
+      </linearGradient>
+    </defs>
+    <rect width="1440" height="240" fill="url(#sky)"/>
+    <circle cx="1150" cy="70" r="34" fill="#e9c46a" opacity=".85"/>
+    <circle cx="1150" cy="70" r="52" fill="#e9c46a" opacity=".28"/>
+    <path d="M0,240 L0,190 Q90,150 200,170 Q300,110 410,150 Q520,60 640,120 Q740,30 850,110 Q960,50 1080,130 Q1200,80 1330,150 L1440,120 L1440,240 Z" fill="#c9d8c6" opacity=".7"/>
+    <path d="M0,240 L0,215 Q160,180 320,200 Q470,150 620,185 Q800,120 980,175 Q1150,135 1300,190 L1440,170 L1440,240 Z" fill="#8fae97" opacity=".8"/>
+    <path d="M0,240 L0,232 Q220,205 460,218 Q700,190 940,215 Q1200,195 1440,218 L1440,240 Z" fill="#41604f"/>
+    <path d="M640,120 Q740,30 850,110 L820,110 Q740,55 662,120 Z" fill="#fff" opacity=".5"/>
+    <path d="M980,175 Q1150,135 1300,190 L1258,190 Q1150,150 1015,175 Z" fill="#fff" opacity=".45"/>
+  </svg>
+</header>
+
+<main>
+
+<!-- ROUTE -->
+<div class="route rv" id="route">
+  <div class="route-chips">
+    <span class="chip">🛬 Taipei</span><span class="arrow">→</span>
+    <span class="chip">Wulai <span class="zh">烏來 · onsen</span></span><span class="arrow">→</span>
+    <span class="chip">Taipei <span class="zh">台北</span></span><span class="arrow">→</span>
+    <span class="chip">Sun Moon Lake <span class="zh">日月潭</span></span><span class="arrow">→</span>
+    <span class="chip">Lugu <span class="zh">鹿谷 · GABA farm</span></span><span class="arrow">→</span>
+    <span class="chip">Wuling <span class="zh">武嶺 3,275 m</span></span><span class="arrow">→</span>
+    <span class="chip">Alishan <span class="zh">阿里山</span></span><span class="arrow">→</span>
+    <span class="chip hot">🎤 Kaohsiung <span class="zh">高雄 · BTS</span></span><span class="arrow">→</span>
+    <span class="chip">Beipu <span class="zh">北埔 · OB tea</span></span><span class="arrow">→</span>
+    <span class="chip">Beitou <span class="zh">北投 · onsen</span></span><span class="arrow">→</span>
+    <span class="chip">🛫 Home</span>
+  </div>
+</div>
+
+<!-- MAP -->
+<section id="mapsec" style="padding-top:42px">
+  <div class="sec-head rv">
+    <h2>The route on the island</h2><span class="zh2 zh">路線圖</span><span class="rule"></span>
+  </div>
+  <div class="rv">
+    <div id="mapid"></div>
+    <div class="map-fallback" id="mapfb">Map tiles need an internet connection — everything else works offline.</div>
+    <div class="map-legend">
+      <span><i></i>overnight stop</span>
+      <span><i class="gold"></i>Wuling ride day</span>
+      <span><i class="red"></i>concert night</span>
+      <span><i class="dot"></i>pass-through</span>
+      <span><i class="line"></i>travel legs (schematic)</span>
+    </div>
+  </div>
+</section>
+
+<!-- ACT NOW -->
+<section class="rv" style="padding-top:34px">
+  <div class="actnow">
+    <h2>Book these first</h2>
+    <p>Six weeks out — order matters.</p>
+    <ol>
+      <li><b>✈️ Flights</b><span>Offer links below — China Eastern out ₽64,627 + China Southern back ₽54,550 = ₽119,177 for two, baggage included.</span></li>
+      <li><b>🎫 Concert date confirmed ✓</b><span>Saturday, Nov 21, 19:00 — Kaohsiung National Stadium. The finale is locked (shows also ran 19 &amp; 22).</span></li>
+      <li><b>🏨 Kaohsiung ×3 + Wuling day</b><span>Concert-weekend hotel spike; confirm a scheduled Nov 17 group ride from Puli exists.</span></li>
+    </ol>
+  </div>
+</section>
+
+<!-- TIMELINE -->
+<section id="days">
+  <div class="sec-head rv">
+    <h2>Day by day</h2><span class="zh2 zh">行程</span><span class="rule"></span>
+  </div>
+
+  <div class="tl">
+
+    <div class="day onsen rv has-ph">
+      <div class="dc">
+        <div class="day-head">
+          <span class="date-chip">Fri · Nov 13</span>
+          <h3>Wulai hot springs</h3><span class="zh">烏來</span>
+          <span class="badge onsen">Onsen · Atayal</span>
+        </div>
+        <ul>
+          <li>Land 14:00 → Airport MRT → Taipei → Xindian → bus 849 up the gorge (~1.5 h total)</li>
+          <li>Onsen hotel with private in-room tub — soak off the flight</li>
+          <li>Atayal old street: wild-boar sausage, millet wine, riverside night</li>
+        </ul>
+        <div class="move">🚌 <b>Transport:</b> Airport MRT + MRT + bus 849 · no car needed</div>
+      </div>
+      <div class="dph">
+        <figure class="ph">
+          <img loading="lazy" alt="Wulai waterfall in the gorge" src="https://thumb.wikimedia.org/wikipedia/commons/thumb/6/67/Wulai_Waterfall-01.2023-09-12.jpg/960px-Wulai_Waterfall-01.2023-09-12.jpg">
+          <figcaption>Wulai falls<span class="zh">烏來瀑布 · your first evening</span></figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <div class="day rv has-ph">
+      <div class="dc">
+        <div class="day-head">
+          <span class="date-chip">Sat · Nov 14</span>
+          <h3>Taipei</h3><span class="zh">台北</span>
+          <span class="badge travel">City</span>
+        </div>
+        <ul>
+          <li>Morning: Wulai waterfall &amp; Atayal museum, then bus back to the city</li>
+          <li>Afternoon: Longshan Temple, Bopiliao old blocks — or National Palace</li>
+          <li>Evening: Ningxia night market; optional riverside YouBike spin</li>
+        </ul>
+        <div class="move">🛏️ <b>Sleep:</b> Taipei — Ximending or Da'an side</div>
+      </div>
+      <div class="dph">
+        <figure class="ph">
+          <img loading="lazy" alt="Taipei 101 at night" src="https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bf/Taipei_101_20130212_night.jpg/960px-Taipei_101_20130212_night.jpg">
+          <figcaption>Taipei nights<span class="zh">台北101 · 夜市前後</span></figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <div class="day rv has-ph">
+      <div class="dc">
+        <div class="day-head">
+          <span class="date-chip">Sun · Nov 15</span>
+          <h3>Sun Moon Lake</h3><span class="zh">日月潭</span>
+          <span class="badge tea">Lake · Thao</span>
+        </div>
+        <ul>
+          <li>HSR Taipei → Taichung (1 h) → 台灣好行 6670 direct to the lake (1 h 45)</li>
+          <li>Shuishe waterfront, Xiangshan visitor centre at sunset</li>
+          <li>Evening stroll; early night before the ride days</li>
+        </ul>
+        <div class="move">🧳 <b>Tip:</b> same hotel for nights 15 &amp; 17 — leave big bags here for the farm night</div>
+      </div>
+      <div class="dph">
+        <figure class="ph">
+          <img loading="lazy" alt="Sun Moon Lake ropeway over the lake" src="https://thumb.wikimedia.org/wikipedia/commons/thumb/5/59/Nantou-County_Taiwan_Sun-Moon-Lake-Ropeway-01.jpg/960px-Nantou-County_Taiwan_Sun-Moon-Lake-Ropeway-01.jpg">
+          <figcaption>Sun Moon Lake<span class="zh">日月潭纜車</span></figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <div class="day ride rv has-ph">
+      <div class="dc">
+        <div class="day-head">
+          <span class="date-chip">Mon · Nov 16</span>
+          <h3>Lake loop → GABA farm</h3><span class="zh">鹿谷 · 佳葉龍茶</span>
+          <span class="badge ride">Ride №1</span><span class="badge tea">Tea night</span>
+        </div>
+        <ul>
+          <li>Morning: <b>e-bike lake loop, ~30 km together</b> — CNN top-10 cycling route</li>
+          <li>Afternoon taxi (~40 min) up to a Lugu tea farm; farmers host dinner</li>
+          <li>Evening: GABA tasting &amp; roasting by the fire — the trip's most authentic night</li>
+        </ul>
+        <div class="move">🍵 <b>Sleep:</b> tea-farm homestay (arranged pickup when booking)</div>
+      </div>
+      <div class="dph">
+        <figure class="ph">
+          <img loading="lazy" alt="Terraced tea plantation rows in Taiwan" src="https://thumb.wikimedia.org/wikipedia/commons/thumb/0/06/Taiwan_2009_WuHe_County_Tea_Plantation_FRD_6216.jpg/960px-Taiwan_2009_WuHe_County_Tea_Plantation_FRD_6216.jpg">
+          <figcaption>Tea rows at dusk<span class="zh">茶園 · GABA 之夜</span></figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <div class="day ride rv has-ph">
+      <div class="dc">
+        <div class="day-head">
+          <span class="date-chip">Tue · Nov 17</span>
+          <h3>Wuling day · 3,275 m</h3><span class="zh">武嶺 · 台灣公路最高點</span>
+          <span class="badge ride">Ride №2 · the big one</span>
+        </div>
+        <ul>
+          <li>Early taxi Lugu → Puli; group ride day with support van + lunch</li>
+          <li>Husband: longest variant — full ~53 km, 2,300 m of climbing from Puli</li>
+          <li>Wife: e-bike with the group, or shuttle to 翠峰 2,300 m + last 14 km to the pass</li>
+          <li>Summit 0–5 °C — van carries the warm kit; descend by shuttle</li>
+        </ul>
+        <div class="move">🚌 <b>Operators:</b> Giant Adventure 一日武嶺 · 順騎自然 / 樂活單車 (Puli) · ~NT$3,900+/pp</div>
+      </div>
+      <div class="dph">
+        <figure class="ph">
+          <img loading="lazy" alt="Mountain road climbing toward Hehuanshan above clouds" src="https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4a/Road_in_Hehuanshan_02.jpg/1280px-Road_in_Hehuanshan_02.jpg">
+          <figcaption>The road to Wuling<span class="zh">合歡山公路 · 台14甲</span></figcaption>
+        </figure>
+        <figure class="ph">
+          <img loading="lazy" alt="Road towards Hehuanshan tunnel" src="https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a6/View_along_the_road_towards_Hehuanshan_Tunnel.jpg/1280px-View_along_the_road_towards_Hehuanshan_Tunnel.jpg">
+          <figcaption>Into the high ridge<span class="zh">昆陽 · 武嶺前線</span></figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <div class="day rv has-ph">
+      <div class="dc">
+        <div class="day-head">
+          <span class="date-chip">Wed · Nov 18</span>
+          <h3>Alishan</h3><span class="zh">阿里山</span>
+          <span class="badge tea">Tsou · high tea</span>
+        </div>
+        <ul>
+          <li>Bus 6739 at 08:00 from Shuishe — over Tataka pass (2,610 m) to Alishan (~4 h)</li>
+          <li>Afternoon: giant-tree walkways 神木群, mountain light</li>
+          <li>Stay in the park, or a Shizhuo 石棹 tea guesthouse for quieter taste</li>
+        </ul>
+        <div class="move">🎫 <b>Reserve:</b> 6739 seats + Alishan hotel ahead</div>
+      </div>
+      <div class="dph">
+        <figure class="ph">
+          <img loading="lazy" alt="Sunrise sea of clouds at Alishan" src="https://thumb.wikimedia.org/wikipedia/commons/thumb/1/12/Sunrise_in_Alishan.jpg/960px-Sunrise_in_Alishan.jpg">
+          <figcaption>Sunrise, next morning<span class="zh">阿里山日出 · 雲海</span></figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <div class="day concert rv has-ph">
+      <div class="dc">
+        <div class="day-head">
+          <span class="date-chip">Thu · Nov 19</span>
+          <h3>Sunrise → Kaohsiung</h3><span class="zh">高雄</span>
+          <span class="badge travel">Southbound</span>
+        </div>
+        <ul>
+          <li>Sunrise above the cloud sea — Zhushan train or shuttle (book on arrival)</li>
+          <li>High-mountain oolong &amp; Alishan GABA tasting on the way down 台18</li>
+          <li>Bus to Chiayi (2.5 h) → HSR to Zuoying — just 25 minutes. Kaohsiung by evening</li>
+        </ul>
+        <div class="move">🚄 <b>Sleep ×3:</b> Kaohsiung near Red Line MRT — booked early for concert weekend</div>
+      </div>
+      <div class="dph">
+        <figure class="ph">
+          <img loading="lazy" alt="Tea plantation on Alishan" src="https://upload.wikimedia.org/wikipedia/commons/8/8b/Tea_plantation_Alishan.jpg">
+          <figcaption>Tea before the train south<span class="zh">阿里山茶園 · 1,600 m</span></figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <div class="day ride rv has-ph">
+      <div class="dc">
+        <div class="day-head">
+          <span class="date-chip">Fri · Nov 20</span>
+          <h3>Cijin Island</h3><span class="zh">旗津</span>
+          <span class="badge ride">Ride №3</span>
+        </div>
+        <ul>
+          <li>Ferry across the harbour → flat island e-bike loop, lighthouse, fort</li>
+          <li>Seafood lunch on stilts over the water</li>
+          <li>Pier-2 Art Center, Love River at dusk — then <b>Ruifeng</b> night market (the locals' one)</li>
+        </ul>
+      </div>
+      <div class="dph">
+        <figure class="ph">
+          <img loading="lazy" alt="Cijin lighthouse, Kaohsiung" src="https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a7/Kaohsiung_Taiwan_Kaohsiung-Lighthouse-01.jpg/1280px-Kaohsiung_Taiwan_Kaohsiung-Lighthouse-01.jpg">
+          <figcaption>Cijin lighthouse<span class="zh">旗津燈塔 · 島上騎行</span></figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <div class="day concert rv has-ph">
+      <div class="dc">
+        <div class="day-head">
+          <span class="date-chip">Sat · Nov 21</span>
+          <h3>Sandimen → BTS</h3><span class="zh">三地門 · 世運主場館</span>
+          <span class="badge concert">🎤 Concert night</span>
+        </div>
+        <ul>
+          <li>Morning: Paiwan &amp; Rukai craft villages — stone-slab houses, glass beads, aboriginal lunch</li>
+          <li>Back by 16:00; MRT Red Line to World Games station — go early, 55k stadium</li>
+          <li><b>BTS — ARIRANG World Tour, 19:00</b></li>
+        </ul>
+        <div class="move">🎫 <b>Tickets confirmed — Sat Nov 21</b> · MRT Red Line to 世運 World Games station, doors early</div>
+      </div>
+      <div class="dph full">
+        <figure class="ph">
+          <img loading="lazy" alt="World Games Stadium Kaohsiung panorama" src="https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1a/World_Games_Main_Stadium_Panorama.jpg/960px-World_Games_Main_Stadium_Panorama.jpg">
+          <figcaption>Your stadium tonight — Kaohsiung National Stadium<span class="zh">世運主場館 · BTS ARIRANG 19:00</span></figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <div class="day onsen rv has-ph">
+      <div class="dc">
+        <div class="day-head">
+          <span class="date-chip">Sun · Nov 22</span>
+          <h3>Oriental Beauty → Beitou</h3><span class="zh">北埔 · 北投</span>
+          <span class="badge tea">Tea №3</span><span class="badge onsen">Last onsen</span>
+        </div>
+        <ul>
+          <li>HSR Zuoying → Hsinchu (~1 h 10) → taxi to Beipu old street</li>
+          <li>Oriental Beauty tastings — bug-bitten sweetness at the source — plus Hakka lunch &amp; 擂茶</li>
+          <li>Evening train to Taipei → MRT to Beitou; private tub under the stars</li>
+        </ul>
+      </div>
+      <div class="dph">
+        <figure class="ph">
+          <img loading="lazy" alt="Historic Hakka courtyard house in Beipu" src="https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cb/Zhongshu_Tang%2C_Beipu%2C_Hsinchu.jpg/1280px-Zhongshu_Tang%2C_Beipu%2C_Hsinchu.jpg">
+          <figcaption>Beipu Hakka hall<span class="zh">北埔 · 東方美人茶</span></figcaption>
+        </figure>
+        <figure class="ph">
+          <img loading="lazy" alt="Beitou Hot Spring Museum" src="https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8f/Beitou_Hot_Spring_Museum-1150418.jpg/960px-Beitou_Hot_Spring_Museum-1150418.jpg">
+          <figcaption>Beitou, by night<span class="zh">北投溫泉 · 星空湯屋</span></figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <div class="day rv">
+      <div class="day-head">
+        <span class="date-chip">Mon · Nov 23</span>
+        <h3>Fly home</h3><span class="zh">一路順風</span>
+        <span class="badge travel">Departure</span>
+      </div>
+      <ul>
+        <li>Slow onsen morning, Beitou park &amp; museum if time allows</li>
+        <li>Airport MRT (~70 min) or taxi (~50 min) to Taoyuan</li>
+        <li>Afternoon TPE → SVO — with 1.2 kg of tea in the suitcase</li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+<!-- WULING PROFILE -->
+<section id="wuling">
+  <div class="sec-head rv"><h2>The climb</h2><span class="zh2 zh">西進武嶺</span><span class="rule"></span></div>
+  <div class="wuling-card rv">
+    <h3>Puli → Wuling · 53 km · +2,800 m</h3>
+    <div class="sub">Provincial Hwy 14A — steady alpine grades, no timed gates, Cingjing meadows, then the above-the-clouds ridge. Summit cold: 0–5 °C.</div>
+    <svg class="prof-svg" viewBox="0 0 820 230" role="img" aria-label="Elevation profile Puli to Wuling">
+      <defs>
+        <linearGradient id="fill" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#e9c46a" stop-opacity=".35"/>
+          <stop offset="1" stop-color="#e9c46a" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+      <g stroke="#ffffff" stroke-opacity=".08">
+        <line x1="50" y1="30" x2="800" y2="30"/><line x1="50" y1="80" x2="800" y2="80"/>
+        <line x1="50" y1="130" x2="800" y2="130"/><line x1="50" y1="180" x2="800" y2="180"/>
+      </g>
+      <g class="wl-sm" opacity=".7">
+        <text x="8" y="34">3,200</text><text x="8" y="84">2,400</text><text x="8" y="134">1,600</text><text x="8" y="184">800</text>
+      </g>
+      <path d="M470,132 L800,42" stroke="#f4a261" stroke-width="7" stroke-linecap="round" opacity=".95" fill="none"/>
+      <path d="M50,190 L120,184 L200,168 L260,138 L330,120 L400,100 L470,132 L560,86 L650,62 L730,48 L800,42 L800,205 L50,205 Z" fill="url(#fill)"/>
+      <path d="M50,190 L120,184 L200,168 L260,138 L330,120 L400,100 L470,132 L560,86 L650,62 L730,48 L800,42" stroke="#e9c46a" stroke-width="3" fill="none" stroke-linejoin="round"/>
+      <g>
+        <circle cx="50" cy="190" r="5" fill="#e9c46a"/><text class="wl" x="50" y="222" text-anchor="middle">Puli 480 m</text>
+        <circle cx="260" cy="138" r="5" fill="#e9c46a"/><text class="wl" x="260" y="122" text-anchor="middle">Cingjing 清境 1,700</text>
+        <circle cx="470" cy="132" r="5" fill="#f4a261"/><text class="wl" x="470" y="116" text-anchor="middle">CuiFeng 翠峰 2,300</text>
+        <circle cx="650" cy="62" r="5" fill="#e9c46a"/><text class="wl" x="650" y="50" text-anchor="middle">Kunyang 3,100</text>
+        <circle cx="800" cy="42" r="7" fill="#fff" stroke="#e9c46a" stroke-width="3"/><text class="wl" x="796" y="26" text-anchor="end">Wuling 武嶺 3,275</text>
+      </g>
+    </svg>
+    <div class="wlegend">
+      <span><i style="background:#e9c46a"></i>Husband — full route, road bike</span>
+      <span><i style="background:#f4a261"></i>Wife — e-bike joins at CuiFeng (2,300 m)</span>
+      <span><i style="background:#ffffff;opacity:.5"></i>Support van follows all day</span>
+    </div>
+  </div>
+</section>
+
+<!-- LEDGERS -->
+<section id="ledgers">
+  <div class="sec-head rv"><h2>Ledgers</h2><span class="zh2 zh">騎與茶</span><span class="rule"></span></div>
+  <div class="grid2">
+    <div class="panel rv">
+      <h3>🚴 Riding · four days</h3>
+      <div class="zh">四個騎乘日</div>
+      <div class="ledger-item"><div class="ico ride">🚲</div><div><b>Sun Moon Lake loop — 30 km</b><span>Both on e-bikes, lakeside path, Monday Nov 16</span></div></div>
+      <div class="ledger-item"><div class="ico ride">⛰️</div><div><b>Wuling 西進 — 53 km / 3,275 m</b><span>Husband full route; wife e-bike from CuiFeng + van, Nov 17</span></div></div>
+      <div class="ledger-item"><div class="ico ride">🌊</div><div><b>Cijin Island — ~10 km</b><span>Flat harbour loop after the ferry, Nov 20</span></div></div>
+      <div class="ledger-item"><div class="ico ride">🌃</div><div><b>Taipei riverside — bonus</b><span>YouBike evening spin, whenever legs allow</span></div></div>
+    </div>
+    <div class="panel rv">
+      <h3>🍵 Tea · three regions, 400 → 2,200 m</h3>
+      <div class="zh">從鹿谷到阿里山</div>
+      <div class="ledger-item"><div class="ico tea">🍃</div><div><b>Lugu GABA 鹿谷</b><span>Farm night + roasting workshop at the source, Nov 16</span></div></div>
+      <div class="ledger-item"><div class="ico tea">🏔️</div><div><b>Alishan high mountain 阿里山</b><span>Oolong &amp; high-grown GABA on the descent, Nov 19</span></div></div>
+      <div class="ledger-item"><div class="ico tea">🫖</div><div><b>Beipu Oriental Beauty 北埔</b><span>Bug-bitten OB + Hakka 擂茶 lunch, Nov 22</span></div></div>
+      <div class="ledger-item"><div class="ico sky">☕</div><div><b>Maokong 包種 — optional</b><span>Gondola + Wenshan pouchong if a Taipei afternoon opens up</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- FLIGHTS + BUDGET -->
+<section id="flights">
+  <div class="sec-head rv"><h2>Flights &amp; money</h2><span class="zh2 zh">航班 · 報價</span><span class="rule"></span></div>
+  <table class="rv">
+    <tr><th>Leg</th><th>Option</th><th>Book</th><th>2 pax</th></tr>
+    <tr class="best">
+      <td>Out<br><span style="font-size:11.5px;color:var(--ink2)">BOOK THIS</span></td>
+      <td><b>China Eastern</b> SVO 17:15 <b>Nov 12</b> → TPE 14:00 <b>Nov 13</b><br><span style="font-size:12.5px;color:var(--ink2)">2 stops · baggage included · lands right on plan</span></td>
+      <td><a class="offer" target="_blank" rel="noopener" href="https://www.tbank-online.com/travel/flights/one-way/MOW-TPE/11-12/?children=0&amp;source=share&amp;infants=0&amp;cabin=Y&amp;flights=11-12-MU-2076_11-13-MU-5186_11-13-MU-5007&amp;adults=2&amp;baggage=1&amp;composite=0">Open offer →</a></td>
+      <td class="price">₽64,627</td>
+    </tr>
+    <tr>
+      <td>Out · alt</td>
+      <td><b>China Southern</b> SVO 14:50 Nov 12 → TPE 14:15 Nov 13<br><span style="font-size:12.5px;color:var(--ink2)">1 stop · baggage included</span></td>
+      <td><a class="offer alt" target="_blank" rel="noopener" href="https://www.tbank-online.com/travel/flights/one-way/MOW-TPE/11-12/?children=0&amp;source=share&amp;infants=0&amp;cabin=Y&amp;flights=11-12-CZ-8028_11-13-CZ-3097&amp;adults=2&amp;baggage=1&amp;composite=0">Open offer →</a></td>
+      <td class="price">₽77,435</td>
+    </tr>
+    <tr class="best">
+      <td>Back<br><span style="font-size:11.5px;color:var(--ink2)">BOOK THIS</span></td>
+      <td><b>China Southern</b> TPE 15:30 <b>Nov 23</b> → SVO <b>Nov 24</b><br><span style="font-size:12.5px;color:var(--ink2)">baggage included · overnight connection</span></td>
+      <td>
+        <a class="offer" target="_blank" rel="noopener" href="https://www.tbank-online.com/travel/flights/one-way/TPE-MOW/11-23/?children=0&amp;source=share&amp;infants=0&amp;cabin=Y&amp;flights=11-23-CZ-3098_11-24-CZ-8027&amp;adults=2&amp;baggage=1&amp;composite=0">arr 13:00 →</a>
+        <a class="offer alt" target="_blank" rel="noopener" href="https://www.tbank-online.com/travel/flights/one-way/TPE-MOW/11-23/?children=0&amp;source=share&amp;infants=0&amp;cabin=Y&amp;flights=11-23-CZ-3098_11-24-CZ-8003&amp;adults=2&amp;baggage=1&amp;composite=0">arr 21:15 →</a>
+      </td>
+      <td class="price">₽54,550</td>
+    </tr>
+    <tr>
+      <td>Back · alt</td>
+      <td><b>Hainan</b> TPE 13:05 Nov 23 → SVO 18:05 Nov 24<br><span style="font-size:12.5px;color:var(--ink2)">baggage included</span></td>
+      <td><a class="offer alt" target="_blank" rel="noopener" href="https://www.tbank-online.com/travel/flights/one-way/TPE-MOW/11-23/?children=0&amp;source=share&amp;infants=0&amp;cabin=Y&amp;flights=11-23-HU-7988_11-24-HU-7985&amp;adults=2&amp;baggage=1&amp;composite=0">Open offer →</a></td>
+      <td class="price">₽74,685</td>
+    </tr>
+    <tr class="warn">
+      <td>Wildcard</td>
+      <td><b>Nov 9 → Nov 22</b> round trip<span class="tag warn">cheapest pair</span><br><span style="font-size:12.5px;color:var(--ink2)">from price calendar — no direct share link; set these dates in the tbank search</span></td>
+      <td><span style="font-size:12px;color:var(--ink2)">—</span></td>
+      <td class="price">₽90,224</td>
+    </tr>
+    <tr class="warn">
+      <td>Avoid</td>
+      <td>Ural Airlines 3-stop combos<br><span style="font-size:12.5px;color:var(--ink2)">land Nov 15, no baggage — wrecks the plan</span></td>
+      <td><span style="font-size:12px;color:var(--ink2)">—</span></td>
+      <td class="price">₽79k</td>
+    </tr>
+  </table>
+  <div class="combo rv">✈️ Best pair: China Eastern out + China Southern back = <b>₽119,177 total for two</b>, baggage on all legs. Links open live tbank share pages — prices re-verified Oct 6.</div>
+  <p class="fine">On the ground: ~US$3,000–3,500 for two, excluding flights &amp; concert — hotels ≈ 1,600 · Wuling day ≈ 250 · trains &amp; buses ≈ 300 · food ≈ 700 · rest buffer.</p>
+</section>
+
+<!-- CHECKLIST -->
+<section id="checklist">
+  <div class="sec-head rv"><h2>Booking checklist</h2><span class="zh2 zh">預訂清單</span><span class="rule"></span></div>
+  <div class="check-col rv">
+    <div class="progress"><i id="pbar"></i></div>
+    <div class="saved" id="pcount">0 of 8 done</div>
+
+    <label class="chk prio"><input type="checkbox" data-k="flights"><span class="box"></span><span class="txt"><b>✈️ Flights — open the offer links above</b><span>China Eastern out ₽64,627 + China Southern back ₽54,550 = ₽119,177 round trip</span></span></label>
+    <label class="chk"><input type="checkbox" data-k="concert" checked><span class="box"></span><span class="txt"><b>🎫 Concert confirmed — Sat Nov 21 ✓</b><span>Shows ran 19 / 21 / 22; yours is Saturday. Done!</span></span></label>
+    <label class="chk prio"><input type="checkbox" data-k="khh"><span class="box"></span><span class="txt"><b>🏨 Kaohsiung ×3 nights</b><span>Near Red Line MRT; concert-weekend prices spike</span></span></label>
+    <label class="chk"><input type="checkbox" data-k="wuling"><span class="box"></span><span class="txt"><b>🚴 Wuling group day — Nov 17</b><span>Giant Adventure 一日武嶺 or Puli shop (順騎自然 / 樂活單車); confirm a Tue departure exists, else shift lake/farm days ±1</span></span></label>
+    <label class="chk"><input type="checkbox" data-k="lugu"><span class="box"></span><span class="txt"><b>🍵 Lugu tea-farm stay — Nov 16</b><span>Book direct with the farm; ask for pickup &amp; roasting evening</span></span></label>
+    <label class="chk"><input type="checkbox" data-k="alishan"><span class="box"></span><span class="txt"><b>🚌 Bus 6739 seats + Alishan hotel — Nov 18</b><span>08:00 Shuishe departure; sunrise shuttle/train booked on arrival</span></span></label>
+    <label class="chk"><input type="checkbox" data-k="onsen"><span class="box"></span><span class="txt"><b>♨️ Wulai tub-room + Beitou tub-room</b><span>Nights of Nov 13 &amp; 22 — private in-room tubs only</span></span></label>
+    <label class="chk"><input type="checkbox" data-k="tpe"><span class="box"></span><span class="txt"><b>🏨 Taipei + Sun Moon Lake hotels</b><span>Same SML hotel both nights for bag storage</span></span></label>
+  </div>
+</section>
+
+<!-- NOTES -->
+<section id="notes" style="padding-bottom:40px">
+  <div class="sec-head rv"><h2>Reality checks</h2><span class="zh2 zh">行前須知</span><span class="rule"></span></div>
+  <div class="notes rv">
+    <div class="note"><span class="emo">🌦️</span><b>Late-November weather</b><p>Taipei 18–22 °C with rain chances · lake 15–20 °C · Wuling summit 0–5 °C · Kaohsiung 26 °C and sunny. Pack layers, gloves, rain shells, swimwear for the tubs.</p></div>
+    <div class="note"><span class="emo">🚫</span><b>Why west, not east</b><p>Taroko's famous trails remain closed in 2026, and the east-side full KOM has no scheduled single-day group rides in November — only private vans. The west climb is the more beautiful kilometre anyway.</p></div>
+    <div class="note"><span class="emo">🚶</span><b>Alishan is for legs, not pedals</b><p>No bike rentals up there — it's shuttle, walkways and sunrise. Your quads will file a thank-you note.</p></div>
+    <div class="note"><span class="emo">🚉</span><b>No car, ever</b><p>HSR + TRA + 台灣好行 tourist buses + MRT + the odd taxi cover every leg. Group rides include their own support van.</p></div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div>Planned Oct 6, 2026 · prices &amp; schedules from live search — re-verify before booking. Map data © OpenStreetMap contributors · tiles: OpenTopoMap / OSM / Esri. Photos via Wikimedia Commons, CC-licensed.</div>
+  <div class="zh">一路順風，茶香滿行囊 — safe travels, and may the climb be kinder than the ticket prices.</div>
+</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+(function(){
+  /* ---------- interactive map ---------- */
+  function initMap(){
+    if(typeof L==='undefined'){ document.getElementById('mapfb').style.display='block'; document.getElementById('mapid').style.display='none'; return; }
+    var map=L.map('mapid',{scrollWheelZoom:false});
+    var topo=L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',{
+      maxZoom:17, attribution:'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors · SRTM · © <a href="https://opentopomap.org">OpenTopoMap</a> (CC-BY-SA)'});
+    var osm=L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{
+      maxZoom:19, attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'});
+    var sat=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{
+      maxZoom:18, attribution:'Tiles &copy; Esri — Source: Esri, Maxar, Earthstar Geographics'});
+    topo.addTo(map);
+    L.control.layers({'Relief 🗺':topo,'Street 🛣':osm,'Satellite 🛰':sat},{},{position:'topleft'}).addTo(map);
+    function pin(cls,txt){ return L.divIcon({className:'', html:'<div class="pin '+cls+'">'+txt+'</div>', iconSize:[27,27], iconAnchor:[14,14], popupAnchor:[0,-12]}); }
+    function dot(){ return L.divIcon({className:'', html:'<div class="pin small"></div>', iconSize:[11,11], iconAnchor:[6,6], popupAnchor:[0,-8]}); }
+    function mark(lat,lng,icon,pop){ var m=L.marker([lat,lng],{icon:icon}).addTo(map); if(pop) m.bindPopup(pop); return m; }
+    mark(25.0777,121.2328, pin('','✈'),'<b>Taoyuan TPE 桃園機場</b><br>Land Nov 13, 14:00 · fly out Nov 23');
+    mark(24.7727,121.5508, pin('','1'),'<b>Wulai 烏來</b><br>Nov 13 — Atayal onsen village, night 1');
+    mark(25.0420,121.5650, pin('','2'),'<b>Taipei 台北</b><br>Nov 14 — temples, night market');
+    mark(23.8657,120.9086, pin('','3'),'<b>Sun Moon Lake 日月潭 · Shuishe</b><br>Nights of Nov 15 &amp; 17 — lake-loop e-bikes');
+    mark(23.7440,120.7540, pin('','4'),'<b>Lugu 鹿谷</b><br>Nov 16 — GABA tea-farm night');
+    mark(23.9669,120.9675, dot(),'<b>Puli 埔里</b><br>Nov 17 — Wuling ride start &amp; finish');
+    mark(24.1362,121.2767, pin('gold','5'),'<b>Wuling 武嶺 · 3,275 m</b><br>Nov 17 — the highest road point in Taiwan');
+    mark(23.4700,120.8550, dot(),'<b>Tataka 塔塔加 · 2,610 m</b><br>Bus 6739 crosses here en route to Alishan');
+    mark(23.5139,120.8016, pin('','6'),'<b>Alishan 阿里山</b><br>Nights of Nov 18 — sunrise, Tsou, high-mountain tea');
+    mark(22.7301,120.2925, pin('red','7'),'<b>Kaohsiung National Stadium 世運主場館</b><br>Nov 21, 19:00 — BTS ARIRANG 🎤');
+    mark(22.7166,120.6519, dot(),'<b>Sandimen 三地門</b><br>Nov 21 — Paiwan &amp; Rukai craft villages');
+    mark(24.6999,121.0645, pin('','8'),'<b>Beipu 北埔</b><br>Nov 22 — Oriental Beauty tastings');
+    mark(25.1324,121.5021, pin('','9'),'<b>Beitou 北投</b><br>Nov 22 — final onsen night');
+    var route=[[25.0777,121.2328],[24.7727,121.5508],[25.0420,121.5650],[23.8657,120.9086],[23.7440,120.7540],[23.9669,120.9675],[24.1362,121.2767],[23.9669,120.9675],[23.8657,120.9086],[23.4700,120.8550],[23.5139,120.8016],[22.7301,120.2925],[22.7166,120.6519],[22.7301,120.2925],[24.6999,121.0645],[25.1324,121.5021],[25.0777,121.2328]];
+    L.polyline(route,{color:'#b7791f',weight:3,opacity:.75,dashArray:'2 8',lineCap:'round'}).addTo(map);
+    map.fitBounds(L.latLngBounds(route).pad(0.08));
+    map.on('click',function(){ map.scrollWheelZoom.enable(); });
+    map.on('mouseout',function(){ map.scrollWheelZoom.disable(); });
+  }
+  try{ initMap(); }catch(e){ document.getElementById('mapfb').style.display='block'; }
+
+  /* ---------- checklist ---------- */
+  var items=[].slice.call(document.querySelectorAll('.chk input'));
+  function refresh(){
+    var done=0;
+    items.forEach(function(i){ if(i.checked) done++; });
+    document.getElementById('pbar').style.width=(done/items.length*100)+'%';
+    document.getElementById('pcount').textContent=done+' of '+items.length+' done';
+    try{
+      var s={}; items.forEach(function(i){ s[i.dataset.k]=i.checked; });
+      localStorage.setItem('tw2026',JSON.stringify(s));
+    }catch(e){}
+  }
+  try{
+    var s=JSON.parse(localStorage.getItem('tw2026')||'{}');
+    items.forEach(function(i){ if(s[i.dataset.k]) i.checked=true; });
+  }catch(e){}
+  items.forEach(function(i){ i.addEventListener('change',refresh); });
+  refresh();
+
+  /* ---------- reveal on scroll ---------- */
+  if('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches){
+    var io=new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('on'); io.unobserve(e.target);} });
+    },{threshold:.08});
+    document.querySelectorAll('.rv').forEach(function(el){ io.observe(el); });
+  } else {
+    document.querySelectorAll('.rv').forEach(function(el){ el.classList.add('on'); });
+  }
+})();
+</script>
+</body>
+</html>
